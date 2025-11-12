@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  redis-node-1:
+    image: redis:7.2-alpine
+    container_name: redis-node-1
+    command: >
+      redis-server
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --port 6379
+      --protected-mode no
+      --bind 0.0.0.0
+      --cluster-announce-ip redis-node-1
+      --cluster-announce-port 6379
+      --cluster-announce-bus-port 16379
+    ports:
+      - "7001:6379"
+      - "17001:16379"
+    networks: [redis-net]
+    volumes:
+      - ./data/node1:/data
+
+  redis-node-2:
+    image: redis:7.2-alpine
+    container_name: redis-node-2
+    command: >
+      redis-server
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --port 6379
+      --protected-mode no
+      --bind 0.0.0.0
+      --cluster-announce-ip redis-node-2
+      --cluster-announce-port 6379
+      --cluster-announce-bus-port 16379
+    ports:
+      - "7002:6379"
+      - "17002:16379"
+    networks: [redis-net]
+    volumes:
+      - ./data/node2:/data
+
+  redis-node-3:
+    image: redis:7.2-alpine
+    container_name: redis-node-3
+    command: >
+      redis-server
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+      --port 6379
+      --protected-mode no
+      --bind 0.0.0.0
+      --cluster-announce-ip redis-node-3
+      --cluster-announce-port 6379
+      --cluster-announce-bus-port 16379
+    ports:
+      - "7003:6379"
+      - "17003:16379"
+    networks: [redis-net]
+    volumes:
+      - ./data/node3:/data
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "8001:5540"   # RedisInsight v2 escucha en 5540 dentro del contenedor
+    networks: [redis-net]
+
+networks:
+  redis-net:
+    driver: bridge
